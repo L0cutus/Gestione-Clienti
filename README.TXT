@@ -1,4 +1,4 @@
-Gestione Magazzino v0.2 del 25 maggio 2009
+Gestione Clienti v0.2 del 03 giugno 2009
 by TIME di Stefano Zamprogno
 licenza GPL3
 ------------------------------------------
@@ -11,6 +11,6 @@ PyQt4 v4.4.4
 Python-reportlab v2.3
 ---------------------
 
-lanciare il programma principale 'magazzino.pyw'
-con il comando 'python magazzino.pyw'
+lanciare il programma principale 'clienti.py'
+con il comando 'python clienti.py'
 
