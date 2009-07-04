@@ -30,7 +30,7 @@ from PyQt4.QtSql  import QSqlDatabase, QSqlQuery, QSqlRelation
 from PyQt4.QtSql  import QSqlRelationalDelegate, QSqlRelationalTableModel
 from PyQt4.QtSql  import QSqlTableModel
 
-import ui_clienti
+from clienti_ui import Ui_MainWindow
 import aboutcli
 
 # Definizione degli 'id' usati poi come colonne nelle tabelle ecc...
@@ -38,20 +38,12 @@ CID, CRAGSOC, CIND, CPIVA, CCF, CTEL, CFAX, CCELL, CEMAIL, CNOTE = range(10)
 
 DATEFORMAT = "dd/MM/yyyy"
 
+__version__ = '0.2.0'
+
 # usate per il salvataggio dei settings dell'applicazione
 CLIORG = "TIME di Stefano Z."
 CLIAPP = "Gestione Clienti"
 CLIDOMAIN = "zamprogno.it"
-
-class MyQSqlTableModel(QSqlTableModel):
-    def __init__(self, parent=None):
-        super(MyQSqlTableModel, self).__init__(parent)
-
-    def data(self, index, role=Qt.DisplayRole):
-        if not index.isValid():
-            return QVariant()
-        return QSqlTableModel.data(self, index, role)
-
 
 class MyQSqlRelationalDelegate(QSqlRelationalDelegate):
     def __init__(self, parent=None):
@@ -69,11 +61,17 @@ class MyQSqlRelationalDelegate(QSqlRelationalDelegate):
                                                     option, index)
 
 
-class MainWindow(QMainWindow, ui_clienti.Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
+    '''
+    Gestione Clienti v.0.2.0
+    by TIME di Stefano Zamprogno
+    @2009
+    '''
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
         self.setupUi(self)
+
         self.setupMenu()
         self.restoreWinSettings()
 
@@ -145,11 +143,10 @@ class MainWindow(QMainWindow, ui_clienti.Ui_MainWindow):
             if not self.creaStrutturaDB():
                 return
             self.filename = unicode(fname)
+            self.setWindowTitle("Gestione Clienti - %s" % self.filename)
             self.setupModels()
             self.setupTables()
-            #self.setupItmSignals()
             self.restoreTablesSettings()
-            #self.mmUpdate()
 
 
     def loadInitialFile(self):
@@ -205,12 +202,15 @@ class MainWindow(QMainWindow, ui_clienti.Ui_MainWindow):
                 if width:
                     settings.setValue("Settings/cTableView/%s" % column,
                                         QVariant(width))
+            self.db.close()
+            del self.db
+
     def setupModels(self):
         """
             Initialize all the application models
         """
         # setup clientiModel
-        self.cModel = MyQSqlTableModel(self)
+        self.cModel = QSqlTableModel(self)
         self.cModel.setTable(QString("clienti"))
         self.cModel.setHeaderData(CID, Qt.Horizontal, QVariant("ID"))
         self.cModel.setHeaderData(CRAGSOC, Qt.Horizontal, QVariant("RagSoc"))
@@ -274,6 +274,7 @@ class MainWindow(QMainWindow, ui_clienti.Ui_MainWindow):
                 "Database non aperto...",
                 5000)
             return
+        customerIndex = self.cTableView.currentIndex()
         if self.filtered:
             self.resetFilter()
         self.cModel.submitAll()

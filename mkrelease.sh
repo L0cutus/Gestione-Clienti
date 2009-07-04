@@ -1,3 +1,3 @@
 #!/bin/sh
 
-tar zcvf gemaga.tar.gz README.TXT aboutcli.py clienti.py resources_rc.py ui_aboutcli.py ui_clienti.py 
+tar cv --lzma -f gecli.tar.lzma README-CLI.TXT aboutcli.py aboutcli_ui.py clienti.py clienti_ui.py resources_rc.py
